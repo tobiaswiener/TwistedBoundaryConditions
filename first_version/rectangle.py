@@ -50,7 +50,9 @@ def run_phis(size=(5,5), t=1, epsilon=3, index_epsilon=0, phi_x_lower=0,phi_x_up
 
     eigenvalues_numpy = np.empty((nphi_x,nphi_y,size_hilbert))
     eigenvalues_numpy[:] = np.nan
-    eigenvalues_xarray = xr.DataArray(data=eigenvalues_numpy, coords=[("phi_x",phi_x_array),("phi_y",phi_y_array),("ev",np.arange(size_hilbert))])
+    eigenvalues_xarray = xr.DataArray(data=eigenvalues_numpy, coords=[("phi_x",phi_x_array),("phi_y",phi_y_array),("#eval",np.arange(size_hilbert))])
+    eigenvectors_numpy = np.empty((nphi_x,nphi_y,size_hilbert,size_hilbert))
+    eigenvectors_xarray = xr.DataArray(data=eigenvectors_numpy, coords=[("phi_x",phi_x_array),("phi_y", phi_y_array), ("#evec", np.arange(size_hilbert)),("dim_evec", np.arange(size_hilbert))])
 
 
 
@@ -61,9 +63,10 @@ def run_phis(size=(5,5), t=1, epsilon=3, index_epsilon=0, phi_x_lower=0,phi_x_up
             H[index_epsilon, index_epsilon] = epsilon
             eigenvalues, eigenvectors = sp.linalg.eigh(H)
             eigenvalues_xarray[counter_x, counter_y,:] = eigenvalues
+            eigenvectors_xarray[counter_x, counter_y,:,:] = eigenvectors
         printProgressBar(counter_x + 1, nphi_x, prefix='Progress:', suffix='Complete', length=50)
 
-    return eigenvalues_xarray
+    return eigenvalues_xarray, eigenvectors_xarray
 
 def plot_eigenvalues_phi_x(full_array, phi_y=0):
     eigenvalues= full_array.isel(phi_y=phi_y)
@@ -72,3 +75,4 @@ def plot_eigenvalues_phi_x(full_array, phi_y=0):
         plt.scatter(ev["phi_x"].values*np.ones_like(ev.values), ev.values, color='black', s=0.5)
 
     plt.show()
+
