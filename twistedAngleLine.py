@@ -63,6 +63,7 @@ class TwistedAngleLine:
 
     def plot_eigenvalues_phi(self):
         fig, axs = plt.subplots(2)
+        fig.set_dpi(100)
         fig.suptitle(
             f'twisted boundary for lattice of size={self.L_x, self.L_y}; hopping t={self.t}; m={self.m}; c={self.c}')
 
@@ -78,8 +79,8 @@ class TwistedAngleLine:
         axs[0].set(xlabel=f"$\phi_x$")
         axs[1].set_title(f"with impurity with $\epsilon = {{{self.e_imp}}}$ at {self.loc_imp}")
         axs[1].set(xlabel=f"$\phi_x$")
-
         plt.show()
+
 
     def plot_eigenvalues_phi_y(self, phi_x=0):
         eigenvalues = self.eigenvalues_xr.isel(phi_y=phi_x)
@@ -96,11 +97,11 @@ if __name__ == '__main__':
     nphi = 1000
 
     phi_x_array = np.linspace(phi_x_lower, phi_x_upper, nphi)
-    m = 0
-    c = np.pi/2
+    m = 0.5
+    c = 0.
 
-    L_x = 10
-    L_y = 10
+    L_x = 15
+    L_y = 14
     t = 1
     loc_imp = (3, 2)
     e_imp = 3
