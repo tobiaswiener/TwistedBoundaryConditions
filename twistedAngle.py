@@ -72,12 +72,14 @@ class TwistedAngle:
 
 
 
-    def plot_eigenvalues_phi_x(self, phi_y=0):
-        fig, axs = plt.subplots(2)
-        fig.suptitle('twisted boundary ')
+    def plot_eigenvalues_phi_x(self, phi_y_index=0):
 
-        eigenvalues = self.eigenvalues_xr.isel(phi_y=phi_y)
-        eigenvalues_imp = self.eigenvalues_xr_imp.isel(phi_y=phi_y)
+        phi_y = self.eigenvalues_xr.coords["phi_y"].values[phi_y_index]
+        fig, axs = plt.subplots(2)
+        fig.suptitle(f'twisted boundary for lattice of size={self.L_x,self.L_y}; hopping t={self.t}; $\phi_y = {{{phi_y}}}$')
+
+        eigenvalues = self.eigenvalues_xr.isel(phi_y=phi_y_index)
+        eigenvalues_imp = self.eigenvalues_xr_imp.isel(phi_y=phi_y_index)
 
         for ev in eigenvalues:
             axs[0].scatter(ev["phi_x"].values * np.ones_like(ev.values), ev.values, color='black', s=0.5)
@@ -86,7 +88,9 @@ class TwistedAngle:
 
 
         axs[0].set_title("without impurity")
-        axs[1].set_title(f"with impurity at {self.loc_imp}")
+        axs[0].set(xlabel=f"$\phi_x$")
+        axs[1].set_title(f"with impurity with $\epsilon = {{{self.e_imp}}}$ at {self.loc_imp}")
+        axs[1].set(xlabel=f"$\phi_x$")
 
         plt.show()
 
