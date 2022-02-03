@@ -46,6 +46,21 @@ class TightBinding_2D:
         self.matrix = h
         return h
 
+    def __location_tuple_to_hilbert_space_index(self, loc_tuple):
+        x_imp, y_imp = loc_tuple
+        try:
+            assert x_imp < self.L_x
+            assert y_imp < self.L_y
+        except AssertionError:
+            print("Impurity outside of lattice")
+            raise
+        hilbert_space_index = x_imp + y_imp*(self.L_y-1)
+        return hilbert_space_index
+
+    def set_impurity(self, loc_tuple = (0,0), e_imp = 0):
+        hilbert_index = self.__location_tuple_to_hilbert_space_index(loc_tuple=loc_tuple)
+        self.matrix[hilbert_index,hilbert_index] = e_imp
+
     def solve(self):
         eval, evec = linalg.eigh(self.matrix)
         self.eval, self.evec = eval, evec
