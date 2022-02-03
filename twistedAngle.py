@@ -1,6 +1,7 @@
 import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
+import scipy as sp
 
 from model import TightBinding_2D
 from utils import printProgressBar
@@ -48,9 +49,16 @@ class TwistedAngle:
                 self.eigenvectors_xr[counter_x,counter_y,:,:] = evec
             printProgressBar(counter_x + 1, self.nphi_x, prefix='Progress:', suffix='Complete', length=50)
 
-
     def plot_eigenvalues_phi_x(self, phi_y=0):
         eigenvalues = self.eigenvalues_xr.isel(phi_y=phi_y)
+
+        for ev in eigenvalues:
+            plt.scatter(ev["phi_x"].values * np.ones_like(ev.values), ev.values, color='black', s=0.5)
+
+        plt.show()
+
+    def plot_eigenvalues_phi_y(self, phi_x=0):
+        eigenvalues = self.eigenvalues_xr.isel(phi_y=phi_x)
 
         for ev in eigenvalues:
             plt.scatter(ev["phi_x"].values * np.ones_like(ev.values), ev.values, color='black', s=0.5)

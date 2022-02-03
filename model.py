@@ -1,7 +1,6 @@
 import numpy as np
 import xarray as xr
-import scipy as sp
-
+from scipy import linalg
 
 class TightBinding_2D:
     def __init__(self, L_x, L_y, t, phi_x, phi_y):
@@ -48,7 +47,7 @@ class TightBinding_2D:
         return h
 
     def solve(self):
-        eval, evec = sp.linalg.eigh(self.matrix)
+        eval, evec = linalg.eigh(self.matrix)
         self.eval, self.evec = eval, evec
         return eval, evec
 
