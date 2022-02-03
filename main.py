@@ -7,12 +7,13 @@ if __name__ == '__main__':
     phi_x_upper = 2 * np.pi
     phi_y_lower = 0
     phi_y_upper = 2 * np.pi
-    nphi_x = 100
-    nphi_y = 100
-    L_x = 10
-    L_y = 11
+    nphi_x = 1000
+    nphi_y = 1
+    L_x = 8
+    L_y = 9
     t = 1
-
+    loc_imp = (5,5)
+    e_imp = 3
     ta = TwistedAngle(phi_x_lower=phi_x_lower,
                       phi_x_upper=phi_x_upper,
                       phi_y_lower=phi_y_lower,
@@ -21,7 +22,9 @@ if __name__ == '__main__':
                       nphi_y=nphi_y,
                       L_x=L_x,
                       L_y=L_y,
-                      t=t)
+                      t=t,
+                      loc_imp=loc_imp,
+                      e_imp=e_imp)
 
     ta.run_phis()
-    ta.plot_eigenvalues_phi_x(phi_y=10)
+    ta.plot_eigenvalues_phi_x(phi_y=0)
