@@ -11,7 +11,13 @@ from utils import printProgressBar
 class TwistedAngleLine:
 
     def __init__(self, phi_x_array, m, c, L_x=5, L_y=4, t=1, loc_imp=(0, 0), e_imp=0):
+        self.eigenvectors_xr_imp = None
+        self.eigenvalues_xr_imp = None
+        self.eigenvectors_xr = None
+        self.eigenvalues_xr = None
+
         self.phi_x_array = phi_x_array
+
         self.m = m
         self.c = c
 
@@ -61,6 +67,27 @@ class TwistedAngleLine:
             self.eigenvectors_xr_imp[counter_x, :, :] = evec_imp
             printProgressBar(counter_x + 1, self.nphi, prefix='Progress:', suffix='Complete', length=50)
 
+    def give_list_eigenvalues(self):
+        n = self.nphi
+
+        all_spots = []
+        all_spots_imp = []
+        for ev in self.eigenvalues_xr:
+            x = ev["phi_x"].values*np.ones_like(ev.values)
+            y = ev.values
+            pos = np.column_stack((x, y))
+            spots = [{'pos': pos[i], 'data': 1} for i in range(x.shape[0])]
+            all_spots += spots
+
+        for ev in self.eigenvalues_xr_imp:
+            x = ev["phi_x"].values*np.ones_like(ev.values)
+            y = ev.values
+            pos = np.column_stack((x, y))
+            spots = [{'pos': pos[i], 'data': 1} for i in range(x.shape[0])]
+            all_spots_imp += spots
+
+        return (all_spots, all_spots_imp)
+
     def plot_eigenvalues_phi(self):
         fig, axs = plt.subplots(2)
         fig.set_dpi(100)
@@ -83,6 +110,10 @@ class TwistedAngleLine:
 
 
     def plot_eigenvalues_phi_y(self, phi_x=0):
+
+        pos = np.random.normal(size=(2, n), scale=1e-5)
+        spots = [{'pos': pos[:, i], 'data': 1} for i in range(n)]
+
         eigenvalues = self.eigenvalues_xr.isel(phi_y=phi_x)
 
         for ev in eigenvalues:
@@ -92,6 +123,7 @@ class TwistedAngleLine:
 
 
 if __name__ == '__main__':
+
     phi_x_lower = 0
     phi_x_upper = 2 * np.pi
     nphi = 1000
