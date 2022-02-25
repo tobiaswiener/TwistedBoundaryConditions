@@ -56,7 +56,6 @@ class TwistedAngleLine:
 
             h_imp = TightBinding_2D(L_x=self.L_x, L_y=self.L_y, phi_x=phi_x, phi_y=phi_y, t=self.t)
             h_imp.set_impurity(loc_tuple=self.loc_imp, e_imp=self.e_imp)
-            h_imp.set_impurity(loc_tuple=(7,10), e_imp=2)
             eval_imp, evec_imp = h_imp.solve()
             self.eigenvalues_xr_imp[counter_x, :] = eval_imp
             self.eigenvectors_xr_imp[counter_x, :, :] = evec_imp
@@ -101,10 +100,10 @@ if __name__ == '__main__':
     m = 0.
     c = 0.
 
-    L_x = 15
-    L_y = 14
+    L_x = 5
+    L_y = 4
     t = 1
-    loc_imp = (3, 2)
+    loc_imp = (1, 2)
     e_imp = 3
 
     ta = TwistedAngleLine(phi_x_array=phi_x_array,
