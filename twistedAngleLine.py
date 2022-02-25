@@ -97,7 +97,7 @@ if __name__ == '__main__':
     nphi = 1000
 
     phi_x_array = np.linspace(phi_x_lower, phi_x_upper, nphi)
-    m = 0.5
+    m = 0.
     c = 0.
 
     L_x = 15

@@ -7,10 +7,10 @@ if __name__ == '__main__':
     phi_x_upper = 2 * np.pi
     phi_y_lower = 0
     phi_y_upper = 2 * np.pi
-    nphi_x = 1000
+    nphi_x = 100
     nphi_y = 1
-    L_x = 5
-    L_y = 6
+    L_x = 30
+    L_y = 30
     t = 1
     loc_imp = (3,2)
     e_imp = 3
