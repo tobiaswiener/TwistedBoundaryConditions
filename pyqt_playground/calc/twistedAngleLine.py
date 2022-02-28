@@ -9,7 +9,6 @@ from utils import printProgressBar
 
 
 class TwistedAngleLine:
-
     def __init__(self, phi_x_array, m, c, L_x=5, L_y=4, t=1, loc_imp=(0, 0), e_imp=0):
         self.eigenvectors_xr_imp = None
         self.eigenvalues_xr_imp = None
@@ -28,6 +27,7 @@ class TwistedAngleLine:
 
         self.loc_imp = loc_imp
         self.e_imp = e_imp
+
 
     def run_phis(self):
 
