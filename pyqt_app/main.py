@@ -9,7 +9,7 @@ import pyqtgraph as pg
 import numpy as np
 from collections import namedtuple
 from itertools import chain
-import inputWidget
+from input.inputWidget import InputWidget
 from twistedAngleLine import TwistedAngleLine
 
 class MainWidget(QtWidgets.QWidget):
@@ -24,7 +24,7 @@ class MainWidget(QtWidgets.QWidget):
 
 
 
-        self.input_widget = inputWidget.InputWidget()
+        self.input_widget = InputWidget()
 
         self.input_widget.btn_calc.clicked.connect(self.calc)
         self.input_widget.btn_clear.clicked.connect(self.clear)

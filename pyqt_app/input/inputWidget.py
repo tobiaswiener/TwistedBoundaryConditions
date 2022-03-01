@@ -1,6 +1,5 @@
 from PyQt6 import QtWidgets, QtCore
-from input.parameterDialog import ParameterDialog
-from input.modelDialog import ModelDialog
+
 TIGHT_BINDING_PARAMETER_DICT = dict({"L_x": 5,
                                      "L_y":6,
                                      't': 1.0,
