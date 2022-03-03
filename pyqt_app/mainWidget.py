@@ -39,7 +39,8 @@ class MainWidget(QtWidgets.QWidget):
             self._layout.addWidget(self.input_widget[i],1,i)
             self.input_widget[i].btn_calc.clicked.connect(partial(self.calc, i))
             self.input_widget[i].btn_clear.clicked.connect(partial(self.clear, i))
-
+            self.pp[i].getViewBox().setRange(xRange=(0,2), yRange=(0,2))
+            self.pp[i].getViewBox().setAspectLocked(lock=True)
         self._layout.addWidget(self.plot_param_widget, 2,0)
 
         self._link_views()
