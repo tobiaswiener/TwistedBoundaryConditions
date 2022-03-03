@@ -2,6 +2,10 @@ import numpy as np
 import xarray as xr
 from scipy import linalg
 import random
+from abc import ABC
+
+
+
 class TightBinding_2D:
     def __init__(self, L_x, L_y, t, phi_x, phi_y, BC_x, BC_y):
         self.L_x = L_x

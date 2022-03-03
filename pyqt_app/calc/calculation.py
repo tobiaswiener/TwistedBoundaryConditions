@@ -25,6 +25,8 @@ class Calculation:
         self.imp_indices = []
         self._make_impurities()
 
+        self.points = []
+
     def run_phis(self):
         size_hilbert = self.model_params["L_x"] * self.model_params["L_y"]
         ds = self.plot_params["ds"]
@@ -45,6 +47,7 @@ class Calculation:
 
         for counter, s in enumerate(s_array):
             phi_x, phi_y = self._s_to_phis(s)
+            self.points.append((phi_x, phi_y))
             h = self._build_model(phi_x=phi_x, phi_y=phi_y)
             h.set_impurities(imp_indices=self.imp_indices, imp_energies=self.imp_energies)
             eigvals, eigvecs = h.solve()
@@ -63,6 +66,16 @@ class Calculation:
 
             phi_x = m_x*s + c_x
             phi_y = m_y*s + c_y
+
+        elif self.plot_params["name"] == "ellipse":
+            a = self.plot_params["a"]
+            b = self.plot_params["b"]
+            x_0 = self.plot_params["x_0"]
+            y_0 = self.plot_params["y_0"]
+
+            phi_x = a*np.cos(2*np.pi*s) + x_0
+            phi_y = a*np.sin(2*np.pi*s) + y_0
+
         return phi_x, phi_y
 
     def _build_model(self, phi_x, phi_y):
@@ -109,6 +122,7 @@ class Calculation:
         self.imp_sites = imp_sites
         self.imp_indices = imp_indices
         self.imp_energies = imp_energies
+
 
 
     def give_list_eigenvalues(self):
