@@ -1,22 +1,27 @@
 from PyQt6 import QtGui, QtCore, QtWidgets
 import pyqtgraph as pg
 from twistedAngleLine import TwistedAngleLine
-from input.inputWidget import InputWidget
+from pyqt_app.input.inputWidget import InputWidget
+from pyqt_app.calc.calculation import Calculation
 import numpy as np
+from functools import partial
+
 
 class MainWidget(QtWidgets.QWidget):
 
-    def __init__(self):
-        super(MainWidget, self).__init__()
-        self._layout = QtWidgets.QVBoxLayout()
+    def __init__(self, Nw=2):
+        super().__init__()
+        self._layout = QtWidgets.QGridLayout()
 
+        self.Nw = 2
         self.plot_widget = pg.GraphicsLayoutWidget()
-        self.w1 = self.plot_widget.addPlot()
-        self.w2 = self.plot_widget.addPlot()
-
-
-
-        self.input_widget = InputWidget()
+        self.w = {}
+        self.input_widget = {}
+        self.spots = {}
+        for i in range(self.Nw):
+            self.w[i] = self.plot_widget.addPlot()
+            self.input_widget[i] = InputWidget()
+            self.spots[i] = []
 
 
 
@@ -24,73 +29,67 @@ class MainWidget(QtWidgets.QWidget):
 
     def setupUi(self):
         self.resize(800, 800)
+        self._layout.addWidget(self.plot_widget, 0,0,1,self.Nw)
 
-        self._layout.addWidget(self.plot_widget)
-        self._layout.addWidget(self.input_widget)
+        for i in range(self.Nw):
+            self._layout.addWidget(self.input_widget[i],1,i)
+            self.input_widget[i].btn_calc.clicked.connect(partial(self.calc, i))
+            self.input_widget[i].btn_clear.clicked.connect(partial(self.clear, i))
 
-        self.input_widget.btn_calc.clicked.connect(self.calc)
-        self.input_widget.btn_clear.clicked.connect(self.clear)
-
+        self._link_views()
         self.setLayout(self._layout)
         self.setWindowTitle('Twisted Boundary Conditions')
 
 
 
-    def calc(self):
+    def calc(self, i):
+        m, model_params = self.input_widget[i].get_model_params()
+        p, plot_params = self.input_widget[i].get_plot_params()
+        im, imp_params = self.input_widget[i].get_imp_params()
 
-        m, model_params = self.input_widget.get_model_params()
-        plot_params = self.input_widget.get_plot_params()
+        calculation = Calculation(m, model_params, p, plot_params, im, imp_params)
+        calculation.run_phis()
 
-        L_x = int(model_params["L_x"])
-        L_y = int(model_params["L_y"])
-        t = float(model_params["t"])
-        loc_imp = (int(model_params["loc_imp_x"]), int(model_params["loc_imp_y"]))
-        e_imp = float(model_params["e_imp"])
+        new_spots = calculation.give_list_eigenvalues()
 
+        all_spots_empty = self._all_spots_empty()
+        self.spots[i].extend(new_spots)
+        self.add_spots_to_plot(i, new_spots)
 
+        if all_spots_empty:
+            self.w[i].getViewBox().autoRange()
 
-        phi_x_lower = float(plot_params["phi_x_min"])
-        phi_x_upper = float(plot_params["phi_x_max"]) * np.pi
-        nphi = int(plot_params["nphi"])
-        phi_x_array = np.linspace(phi_x_lower, phi_x_upper, nphi)
-        m = float(plot_params["m"])
-        c = float(plot_params["c"])
-
-
-        ta = TwistedAngleLine(phi_x_array=phi_x_array,
-                              m=m,
-                              c=c,
-                              L_x=L_x,
-                              L_y=L_y,
-                              t=t,
-                              loc_imp=loc_imp,
-                              e_imp=e_imp)
-
-        ta.run_phis()
-
-        spots, spots_imp = ta.give_list_eigenvalues()
-
-        self.add_data(spots,w=0)
-        self.add_data(spots_imp, w=1)
-        self._link_views()
+    def _all_spots_empty(self):
+        all_empty = True
+        for s in self.spots.values():
+            if s:
+                all_empty = False
+            else:
+                pass
+        return all_empty
 
     def _link_views(self):
-        self.w1.getViewBox().setXLink(view=self.w2)
-        self.w2.getViewBox().setXLink(view=self.w1)
-        self.w1.getViewBox().setYLink(view=self.w2)
-        self.w2.getViewBox().setYLink(view=self.w1)
+        for i in range(self.Nw):
+            self.w[i].getViewBox().setXLink(view=self.w[(i+1)%self.Nw])
+            self.w[i].getViewBox().setYLink(view=self.w[(i+1)%self.Nw])
 
-    def add_data(self, spots, w=0):
-        plots = [self.w1, self.w2]
-        w = plots[w]
+
+    def add_spots_to_plot(self, i, new_spots):
         s = pg.ScatterPlotItem(size=10, pen=pg.mkPen(None), brush=pg.mkBrush(255, 255, 255, 120))
         s.setSize(2)
-        s.addPoints(spots)
-        w.addItem(s)
+        s.addPoints(new_spots)
+        self.w[i].addItem(s)
+
+    def refresh_plot(self, i):
+        s = pg.ScatterPlotItem(size=10, pen=pg.mkPen(None), brush=pg.mkBrush(255, 255, 255, 120))
+        s.setSize(2)
+        s.addPoints(self.spots[i])
+        self.w[i].clear()
+        self.w[i].addItem(s)
 
 
-    def clear(self):
-        self.w1.clear()
-        self.w2.clear()
+    def clear(self, i):
+            self.w[i].clear()
+            self.spots[i] = []
 
 
