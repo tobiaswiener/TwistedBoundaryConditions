@@ -15,7 +15,6 @@ class Calculation:
         self.model_params = model_params
         self.plot_params = plot_params
         self.imp_params = imp_params
-
         self.Ns = None
         self.eigenvectors_xr = None
         self.eigenvalues_xr = None
@@ -124,5 +123,3 @@ class Calculation:
 
 
         return all_spots
-
-
