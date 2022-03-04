@@ -15,35 +15,33 @@ class MainWidget(QtWidgets.QWidget):
 
         self.Nw = 2
         self.plot_widget = pg.GraphicsLayoutWidget()
-        self.plot_param_widget = pg.GraphicsLayoutWidget()
+        #self.plot_param_widget = pg.GraphicsLayoutWidget()
         self.w = {}
-        self.pp = {}
         self.input_widget = {}
         self.spots = {}
-        self.points = {}
+
+        self.calculation = {}
         for i in range(self.Nw):
             self.w[i] = self.plot_widget.addPlot()
             self.input_widget[i] = InputWidget()
             self.spots[i] = []
-            self.pp[i] = self.plot_param_widget.addPlot()
-            self.points[i] = []
 
 
         self.setupUi()
 
     def setupUi(self):
-        self.resize(800, 800)
+        self.resize(1200, 1000)
         self._layout.addWidget(self.plot_widget, 0,0,1,self.Nw)
 
         for i in range(self.Nw):
             self._layout.addWidget(self.input_widget[i],1,i)
             self.input_widget[i].btn_calc.clicked.connect(partial(self.calc, i))
             self.input_widget[i].btn_clear.clicked.connect(partial(self.clear, i))
-            self.pp[i].getViewBox().setRange(xRange=(0,2), yRange=(0,2))
-            self.pp[i].getViewBox().setAspectLocked(lock=True)
-        self._layout.addWidget(self.plot_param_widget, 2,0)
+        #self._layout.addWidget(self.plot_param_widget, 2,0)
 
         self._link_views()
+        self._set_plot_options()
+        self._layout.setRowStretch(0,2)
         self.setLayout(self._layout)
         self.setWindowTitle('Twisted Boundary Conditions')
 
@@ -66,7 +64,6 @@ class MainWidget(QtWidgets.QWidget):
         if all_spots_empty:
             self.w[i].getViewBox().autoRange()
 
-        self.add_points(i, calculation.points)
     def _all_spots_empty(self):
         all_empty = True
         for s in self.spots.values():
@@ -81,11 +78,12 @@ class MainWidget(QtWidgets.QWidget):
             self.w[i].getViewBox().setXLink(view=self.w[(i+1)%self.Nw])
             self.w[i].getViewBox().setYLink(view=self.w[(i+1)%self.Nw])
 
-    def add_points(self, i, points):
-        s = pg.ScatterPlotItem(size=10, pen=pg.mkPen(None), brush=pg.mkBrush(255, 255, 255, 120))
-        s.setSize(2)
-        s.addPoints(pos = points)
-        self.pp[i].addItem(s)
+    def _set_plot_options(self):
+        for i in range(self.Nw):
+            self.w[i].getViewBox().setMouseEnabled(x=False,y=True)
+            self.w[i].getViewBox().setMouseMode(pg.ViewBox.RectMode)
+            self.w[i].setLabel("bottom",text="s")
+            self.w[i].setLabel("left",text="E")
 
     def add_spots_to_plot(self, i, new_spots):
         s = pg.ScatterPlotItem(size=10, pen=pg.mkPen(None), brush=pg.mkBrush(255, 255, 255, 120))
@@ -105,6 +103,5 @@ class MainWidget(QtWidgets.QWidget):
     def clear(self, i):
             self.w[i].clear()
             self.spots[i] = []
-            self.pp[i].clear()
 
 

@@ -17,8 +17,6 @@ class ImpParamsWidget(QtWidgets.QWidget):
 
         self.imp_params = {}
         self.init_imp_params()
-
-
         self.setupUI()
 
     def init_imp_params(self):
@@ -56,6 +54,8 @@ class ImpParamsWidget(QtWidgets.QWidget):
                 temp_value = value.text()
                 params[param] = IMPURITIES[self.i]["types"][param](temp_value)
         return params
+
+
 
 
 

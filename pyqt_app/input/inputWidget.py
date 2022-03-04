@@ -5,9 +5,8 @@ from pyqt_app.input.modelWidget import ModelWidget
 from pyqt_app.input.impWidget import ImpWidget
 
 from pyqt_app.input.plotWidget import PlotWidget
-
+import random
 class InputWidget(QtWidgets.QWidget):
-    sig_calc_triggered = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
         super(InputWidget, self).__init__(parent)
@@ -46,6 +45,9 @@ class InputWidget(QtWidgets.QWidget):
         i = self.imp_widget.choose_imp.currentText()
         params = self.imp_widget.imp_params_widgets[i].get_imp_params()
         return i, params
+
+
+
 
 if __name__ == '__main__':
 

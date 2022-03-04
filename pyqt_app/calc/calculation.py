@@ -87,18 +87,6 @@ class Calculation:
             model = TwoBand_2D(**self.model_params, phi_x=phi_x, phi_y=phi_y)
         return model
 
-    def __location_tuple_to_hilbert_space_index(self, loc_tuple):
-        x, y = loc_tuple
-
-        try:
-            assert x < self.model_params["L_x"]
-            assert y < self.model_params["L_y"]
-        except AssertionError:
-            print("location outside of lattice")
-            raise
-        hilbert_space_index = x + y*(self.model_params["L_y"]-1)
-        return hilbert_space_index
-
     def _make_impurities(self):
         all_sites = []
         imp_sites = []
