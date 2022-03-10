@@ -102,7 +102,7 @@ class Calculation:
                 site = random.choice(all_sites)
                 all_sites.remove(site)
                 imp_sites.append(site)
-                imp_indices.append(self.__location_tuple_to_hilbert_space_index(site))
+                imp_indices.append(Model_2D.static_location_tuple_to_hilbert_space_index(self.model_params["L_x"], self.model_params["L_y"], site))
                 energy = np.random.uniform(a, b)
                 imp_energies.append(energy)
 
