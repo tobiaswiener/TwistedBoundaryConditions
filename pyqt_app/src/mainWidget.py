@@ -1,9 +1,12 @@
-from PyQt6 import QtGui, QtCore, QtWidgets
+from PyQt6 import QtWidgets, QtGui
+from PyQt6.QtCore import QObject
+from PyQt6.QtCore import QThread
 import pyqtgraph as pg
-from twistedAngleLine import TwistedAngleLine
-from pyqt_app.input.inputWidget import InputWidget
-from pyqt_app.calc.calculation import Calculation
-import numpy as np
+from PyQt6.QtCore import pyqtSignal
+
+from src.input.inputWidget import InputWidget
+from src.calc.calculation import Calculation
+from src.utils.progressBar import ProgressBar
 from functools import partial
 
 
@@ -11,11 +14,12 @@ class MainWidget(QtWidgets.QWidget):
 
     def __init__(self, Nw=2):
         super().__init__()
+        self.worker = None
+        self.thread = None
         self._layout = QtWidgets.QGridLayout()
 
         self.Nw = 2
         self.plot_widget = pg.GraphicsLayoutWidget()
-        #self.plot_param_widget = pg.GraphicsLayoutWidget()
         self.w = {}
         self.input_widget = {}
         self.spots = {}
@@ -38,7 +42,8 @@ class MainWidget(QtWidgets.QWidget):
             self._layout.setRowStretch(i, 1)
             self.input_widget[i].btn_calc.clicked.connect(partial(self.calc, i))
             self.input_widget[i].btn_clear.clicked.connect(partial(self.clear, i))
-        #self._layout.addWidget(self.plot_param_widget, 2,0)
+            self.input_widget[i].btn_kill.clicked.connect(partial(self.kill, i))
+
 
         self._link_views()
         self._set_plot_options()
@@ -48,15 +53,43 @@ class MainWidget(QtWidgets.QWidget):
 
 
 
+    def kill(self, i):
+        print("kill")
+
+
+
     def calc(self, i):
         m, model_params = self.input_widget[i].get_model_params()
         p, plot_params = self.input_widget[i].get_plot_params()
         im, imp_params = self.input_widget[i].get_imp_params()
         imp_dict = self.input_widget[i].get_impurity_dict()
-        calculation = Calculation(m, model_params, p, plot_params, im, imp_params, imp_dict)
-        calculation.run_phis()
 
-        new_spots = calculation.give_list_eigenvalues()
+
+        # Step 2: Create a QThread object
+        self.thread = QThread()
+        # Step 3: Create a worker object
+        self.worker = Calculation(m, model_params, p, plot_params, im, imp_params, imp_dict)
+        # Step 4: Move worker to the thread
+        self.worker.moveToThread(self.thread)
+
+        # Step 5: Connect signals and slots
+        self.thread.started.connect(self.worker.run_phis)
+        self.worker.started.connect(self.input_widget[i].set_kill_btn)
+        self.worker.finished.connect(self.input_widget[i].set_calc_btn)
+
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(partial(self.add_new_spots, i))
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.worker.progress.connect(self.input_widget[i].progress_bar.update_percentage)
+        self.worker.time_remain.connect(self.input_widget[i].progress_bar.update_time)
+        # Step 6: Start the thread
+        self.thread.start()
+
+
+
+
+    def add_new_spots(self, i):
+        new_spots = self.worker.give_list_eigenvalues()
 
         all_spots_empty = self._all_spots_empty()
         self.spots[i].extend(new_spots)
@@ -64,6 +97,7 @@ class MainWidget(QtWidgets.QWidget):
 
         if all_spots_empty:
             self.w[i].getViewBox().autoRange()
+
 
     def _all_spots_empty(self):
         all_empty = True

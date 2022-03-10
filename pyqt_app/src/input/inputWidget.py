@@ -1,16 +1,14 @@
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
-import sys
-
+import random
+from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox
 
-from pyqt_app.ParameterDicts import *
-from pyqt_app.input.modelWidget import ModelWidget
-from pyqt_app.input.impWidget import ImpWidget
-from pyqt_app.input.impListWidget import *
+from src.input.impListWidget import ImpInfoWidget
+from src.input.modelWidget import ModelWidget
+from src.input.impWidget import ImpWidget
+from src.input.plotWidget import PlotWidget
+from src.utils.progressBar import ProgressBar
 
-from pyqt_app.input.plotWidget import PlotWidget
-import random
 class InputWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
@@ -24,8 +22,11 @@ class InputWidget(QtWidgets.QWidget):
         self.imp_widget = ImpWidget()
 
         self.btn_calc = QtWidgets.QPushButton("Calculate")
-        self.btn_clear = QtWidgets.QPushButton("Clear")
+        self.btn_kill = QtWidgets.QPushButton("Kill Calculation")
+        self.btn_kill.hide()
+        self.btn_clear = QtWidgets.QPushButton("Clear Plot")
 
+        self.progress_bar = ProgressBar()
         for m in self.model_widget.model_params_widgets:
             model_params_widget = self.model_widget.model_params_widgets[m]
             model_params_widget.model_params["L_x"].editingFinished.connect(self.imp_widget.imp_list_widget.listWidget.clear)
@@ -36,7 +37,12 @@ class InputWidget(QtWidgets.QWidget):
 
         self.setupUi()
 
-
+    def set_calc_btn(self):
+        self.btn_kill.hide()
+        self.btn_calc.show()
+    def set_kill_btn(self):
+        self.btn_calc.hide()
+        self.btn_kill.show()
 
     def setupUi(self):
 
@@ -44,9 +50,12 @@ class InputWidget(QtWidgets.QWidget):
         self._layout.addWidget(self.plot_widget,0,1)
         self._layout.addWidget(self.imp_widget, 0,2)
 
-        self._layout.addWidget(self.btn_calc,1,0)
-        self._layout.addWidget(self.btn_clear,2,0)
+        self._layout.addWidget(self.btn_calc,2,0)
+        self._layout.addWidget(self.btn_kill,2,0)
 
+        self._layout.addWidget(self.btn_clear,3,0)
+
+        self._layout.addWidget(self.progress_bar,1,0)
 
         self.imp_widget.imp_list_widget.btn_add.clicked.connect(self.add_impurity_to_list)
 

@@ -3,12 +3,8 @@
 Example demonstrating a variety of scatter plot features.
 """
 import sys
-
-from PyQt6 import QtGui, QtCore, QtWidgets
-
-from collections import namedtuple
-from itertools import chain
-from mainWidget import MainWidget
+from PyQt6 import QtWidgets
+from src.mainWidget import MainWidget
 
 
 

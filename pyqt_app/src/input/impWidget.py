@@ -1,10 +1,8 @@
-from PyQt6 import QtWidgets, QtCore
-import sys
+from PyQt6 import QtWidgets
 
-from collections.abc import Iterable
-from pyqt_app.input.impParamsWidget import ImpParamsWidget
-from pyqt_app.input.impListWidget import *
-from pyqt_app.ParameterDicts import *
+from src.input.impParamsWidget import ImpParamsWidget
+from src.input.impListWidget import ImpListWidget
+from src.ParameterDicts import *
 
 class ImpWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):

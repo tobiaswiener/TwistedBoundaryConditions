@@ -1,10 +1,9 @@
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import sys
 
-from collections.abc import Iterable
 
-from pyqt_app.ParameterDicts import *
-from pyqt_app.input.plotParamsWidget import PlotParamsWidget
+from src.ParameterDicts import *
+from src.input.plotParamsWidget import PlotParamsWidget
 
 class PlotWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):

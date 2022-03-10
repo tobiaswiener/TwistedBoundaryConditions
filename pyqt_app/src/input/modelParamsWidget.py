@@ -1,9 +1,7 @@
 from PyQt6 import QtWidgets, QtCore
 import sys
-
 from collections.abc import Iterable
-
-from pyqt_app.ParameterDicts import *
+from src.ParameterDicts import *
 
 
 

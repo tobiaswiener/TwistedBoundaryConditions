@@ -2,10 +2,9 @@
 import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
-import scipy as sp
 
 from model import TightBinding_2D
-from utils import printProgressBar
+from old.utils import printProgressBar
 
 
 class TwistedAngleLine:

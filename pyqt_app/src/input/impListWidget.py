@@ -1,13 +1,7 @@
 
-
-
 from PyQt6 import QtWidgets, QtCore
 
 import sys
-
-from collections.abc import Iterable
-
-from pyqt_app.ParameterDicts import *
 
 
 
@@ -19,7 +13,7 @@ class ImpListWidget(QtWidgets.QWidget):
         self.listWidget = QtWidgets.QListWidget()
         self.btn_delete = QtWidgets.QPushButton("delete")
         self.btn_clear = QtWidgets.QPushButton("clear")
-        self.btn_add = QtWidgets.QPushButton("add")
+        self.btn_add = QtWidgets.QPushButton("add impurity")
 
         self.setupUI()
 
@@ -41,7 +35,6 @@ class ImpListWidget(QtWidgets.QWidget):
     def _delete_imp(self):
         imps = self.listWidget.selectedItems()
         for imp in imps:
-            x,y,energy = imp.get_values()
             ix = self.listWidget.indexFromItem(imp)
             self.listWidget.takeItem(ix.row())
 

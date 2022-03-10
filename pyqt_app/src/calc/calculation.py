@@ -1,14 +1,18 @@
-import numpy as np
-import xarray as xr
-import matplotlib.pyplot as plt
-import scipy as sp
-from pyqt_app.calc.model import *
+from PyQt6 import QtGui
+from PyQt6.QtCore import QThread, pyqtSignal, QObject
+from src.calc.model import *
+from src.utils.progressBar import ProgressBar
 
-from pyqt_app.ParameterDicts import *
+import time
 
+class Calculation(QObject):
+    started = pyqtSignal()
+    finished = pyqtSignal()
+    progress = pyqtSignal(int)
+    time_remain = pyqtSignal(int)
 
-class Calculation:
     def __init__(self, m, model_params, p, plot_params, i ,imp_params, imp_dict=None):
+        super(Calculation, self).__init__()
         self.m = m
         self.p = p
         self.i = i
@@ -22,7 +26,11 @@ class Calculation:
 
         self.points = []
 
+
+
+
     def run_phis(self):
+        self.started.emit()
         size_hilbert = self.model_params["L_x"] * self.model_params["L_y"]
         ds = self.plot_params["ds"]
         s_min = self.plot_params["s_min"]
@@ -39,9 +47,10 @@ class Calculation:
                                             coords=[("s", s_array),
                                                     ("#evec", np.arange(size_hilbert)),
                                                     ("dim_evec", np.arange(size_hilbert))])
-
-
+        sum = 0
+        i = 0
         for counter, s in enumerate(s_array):
+            tic = time.time_ns()
             phi_x, phi_y = self._s_to_phis(s)
             self.points.append((phi_x, phi_y))
             h = self._build_model(phi_x=phi_x, phi_y=phi_y)
@@ -49,6 +58,17 @@ class Calculation:
             eigvals, eigvecs = h.solve()
             self.eigenvalues_xr[counter, :] = eigvals
             self.eigenvectors_xr[counter, :, :] = eigvecs
+            toc = time.time_ns()
+            sum += toc-tic
+            mean_time = int(sum/(counter+1))
+            if i != int(100*counter/self.Ns):
+                time_remain = int(mean_time*(self.Ns-counter)/1_000_000_000)
+                self.progress.emit(i)
+                self.time_remain.emit(time_remain)
+                i += 1
+
+        self.finished.emit()
+
 
     def _s_to_phis(self, s):
         phi_x = None
