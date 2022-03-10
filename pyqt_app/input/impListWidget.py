@@ -38,11 +38,14 @@ class ImpListWidget(QtWidgets.QWidget):
 
         self.setLayout(self._layout)
 
+    def add_imp(self):
+        pass
 
     def _delete_imp(self):
         imps = self.listWidget.selectedItems()
         for imp in imps:
-            self.listWidget.removeItemWidget(imp)
+            ix = self.listWidget.indexFromItem(imp)
+            self.listWidget.takeItem(ix.row())
 
 
 class ImpInfoWidget(QtWidgets.QListWidgetItem):
@@ -60,4 +63,3 @@ if __name__ == '__main__':
     widget = ImpListWidget()
     widget.show()
     sys.exit(app.exec())
-
