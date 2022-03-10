@@ -10,9 +10,11 @@ class Calculation(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(int)
     time_remain = pyqtSignal(int)
+    killed = pyqtSignal()
 
     def __init__(self, m, model_params, p, plot_params, i ,imp_params, imp_dict=None):
         super(Calculation, self).__init__()
+        self.active = False
         self.m = m
         self.p = p
         self.i = i
@@ -30,6 +32,7 @@ class Calculation(QObject):
 
 
     def run_phis(self):
+        self.active = True
         self.started.emit()
         size_hilbert = self.model_params["L_x"] * self.model_params["L_y"]
         ds = self.plot_params["ds"]
@@ -50,6 +53,7 @@ class Calculation(QObject):
         sum = 0
         i = 0
         for counter, s in enumerate(s_array):
+
             tic = time.time_ns()
             phi_x, phi_y = self._s_to_phis(s)
             self.points.append((phi_x, phi_y))
@@ -66,8 +70,17 @@ class Calculation(QObject):
                 self.progress.emit(i)
                 self.time_remain.emit(time_remain)
                 i += 1
+            if not self.active:
+                self.killed.emit()
+                break
 
-        self.finished.emit()
+        if self.active:
+            self.finished.emit()
+
+
+
+    def stop(self):
+        self.active = False
 
 
     def _s_to_phis(self, s):

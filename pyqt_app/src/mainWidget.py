@@ -54,11 +54,13 @@ class MainWidget(QtWidgets.QWidget):
 
 
     def kill(self, i):
-        print("kill")
+        if self.worker is not None:
+            self.worker.stop()
 
 
 
     def calc(self, i):
+        self.input_widget[i].setInputEnabled(False)
         m, model_params = self.input_widget[i].get_model_params()
         p, plot_params = self.input_widget[i].get_plot_params()
         im, imp_params = self.input_widget[i].get_imp_params()
@@ -76,12 +78,20 @@ class MainWidget(QtWidgets.QWidget):
         self.thread.started.connect(self.worker.run_phis)
         self.worker.started.connect(self.input_widget[i].set_kill_btn)
         self.worker.finished.connect(self.input_widget[i].set_calc_btn)
+        self.worker.killed.connect(self.input_widget[i].set_calc_btn)
 
+
+        self.worker.killed.connect(self.thread.quit)
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(partial(self.add_new_spots, i))
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.progress.connect(self.input_widget[i].progress_bar.update_percentage)
         self.worker.time_remain.connect(self.input_widget[i].progress_bar.update_time)
+
+        self.worker.killed.connect(self.input_widget[i].progress_bar.reset)
+        self.worker.killed.connect(partial(self.input_widget[i].setInputEnabled,True))
+        self.worker.finished.connect(partial(self.input_widget[i].setInputEnabled,True))
+
         # Step 6: Start the thread
         self.thread.start()
 

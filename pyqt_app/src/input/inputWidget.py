@@ -40,6 +40,8 @@ class InputWidget(QtWidgets.QWidget):
     def set_calc_btn(self):
         self.btn_kill.hide()
         self.btn_calc.show()
+        self.progress_bar.reset()
+
     def set_kill_btn(self):
         self.btn_calc.hide()
         self.btn_kill.show()
@@ -80,6 +82,16 @@ class InputWidget(QtWidgets.QWidget):
     def get_impurity_dict(self):
         occupied_impurity_dict = self.imp_widget.imp_list_widget.get_impurities()
         return occupied_impurity_dict
+
+    def setInputEnabled(self, enabled):
+        for child in self.findChildren(QtWidgets.QComboBox):
+            child.setEnabled(enabled)
+        for child in self.findChildren(QtWidgets.QLineEdit):
+            child.setEnabled(enabled)
+        for child in self.findChildren(QtWidgets.QPushButton):
+            if child.text() == "Kill Calculation" or child.text() == "Clear Plot":
+                continue
+            child.setEnabled(enabled)
 
 
 
