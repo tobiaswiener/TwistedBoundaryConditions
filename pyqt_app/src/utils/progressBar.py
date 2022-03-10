@@ -43,7 +43,9 @@ class ProgressBar(QWidget):
         minutes = time_remain // 50
         text = f"remaining time: {minutes} min {seconds} sec"
         self.time.setText(text)
-
+    def reset(self):
+        self.pbar.setValue(0)
+        self.time.setText("remaining time:")
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = ProgressBar()
