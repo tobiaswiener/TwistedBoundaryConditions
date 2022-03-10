@@ -8,21 +8,17 @@ from pyqt_app.ParameterDicts import *
 
 
 class Calculation:
-    def __init__(self, m, model_params, p, plot_params, i ,imp_params):
+    def __init__(self, m, model_params, p, plot_params, i ,imp_params, imp_dict=None):
         self.m = m
         self.p = p
         self.i = i
         self.model_params = model_params
         self.plot_params = plot_params
         self.imp_params = imp_params
+        self.imp_dict= imp_dict
         self.Ns = None
         self.eigenvectors_xr = None
         self.eigenvalues_xr = None
-
-        self.imp_sites = []
-        self.imp_energies = []
-        self.imp_indices = []
-        self._make_impurities()
 
         self.points = []
 
@@ -34,6 +30,7 @@ class Calculation:
 
         s_array = np.arange(s_min, s_max, ds)
         self.Ns = s_array.size
+
 
         self.eigenvalues_xr = xr.DataArray(data=np.nan * np.empty((self.Ns, size_hilbert)),
                                            coords=[("s", s_array),
@@ -48,7 +45,7 @@ class Calculation:
             phi_x, phi_y = self._s_to_phis(s)
             self.points.append((phi_x, phi_y))
             h = self._build_model(phi_x=phi_x, phi_y=phi_y)
-            h.set_impurities(imp_indices=self.imp_indices, imp_energies=self.imp_energies)
+            h.set_impurities(imp_dict = self.imp_dict)
             eigvals, eigvecs = h.solve()
             self.eigenvalues_xr[counter, :] = eigvals
             self.eigenvectors_xr[counter, :, :] = eigvecs
@@ -86,29 +83,7 @@ class Calculation:
             model = TwoBand_2D(**self.model_params, phi_x=phi_x, phi_y=phi_y)
         return model
 
-    def _make_impurities(self):
-        all_sites = []
-        imp_sites = []
-        imp_energies = []
-        imp_indices = []
-        if self.i == "uniform":
-            a = self.imp_params["a"]
-            b = self.imp_params["b"]
-            N = self.imp_params["N"]
-            for x in range(self.model_params["L_x"]):
-                for y in range(self.model_params["L_y"]):
-                    all_sites.append((x,y))
-            for i in range(N):
-                site = random.choice(all_sites)
-                all_sites.remove(site)
-                imp_sites.append(site)
-                imp_indices.append(Model_2D.static_location_tuple_to_hilbert_space_index(self.model_params["L_x"], self.model_params["L_y"], site))
-                energy = np.random.uniform(a, b)
-                imp_energies.append(energy)
 
-        self.imp_sites = imp_sites
-        self.imp_indices = imp_indices
-        self.imp_energies = imp_energies
 
 
 

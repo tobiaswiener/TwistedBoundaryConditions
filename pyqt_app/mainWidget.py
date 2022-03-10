@@ -19,7 +19,7 @@ class MainWidget(QtWidgets.QWidget):
         self.w = {}
         self.input_widget = {}
         self.spots = {}
-
+        self.imp_dict = {}
         self.calculation = {}
         for i in range(self.Nw):
             self.w[i] = self.plot_widget.addPlot()
@@ -32,9 +32,10 @@ class MainWidget(QtWidgets.QWidget):
     def setupUi(self):
         self.resize(1200, 1000)
         self._layout.addWidget(self.plot_widget, 0,0,1,self.Nw)
-
+        self._layout.setRowStretch(0,4)
         for i in range(self.Nw):
             self._layout.addWidget(self.input_widget[i],1,i)
+            self._layout.setRowStretch(i, 1)
             self.input_widget[i].btn_calc.clicked.connect(partial(self.calc, i))
             self.input_widget[i].btn_clear.clicked.connect(partial(self.clear, i))
         #self._layout.addWidget(self.plot_param_widget, 2,0)
@@ -51,8 +52,8 @@ class MainWidget(QtWidgets.QWidget):
         m, model_params = self.input_widget[i].get_model_params()
         p, plot_params = self.input_widget[i].get_plot_params()
         im, imp_params = self.input_widget[i].get_imp_params()
-
-        calculation = Calculation(m, model_params, p, plot_params, im, imp_params)
+        imp_dict = self.input_widget[i].get_impurity_dict()
+        calculation = Calculation(m, model_params, p, plot_params, im, imp_params, imp_dict)
         calculation.run_phis()
 
         new_spots = calculation.give_list_eigenvalues()

@@ -3,6 +3,7 @@ import sys
 
 from collections.abc import Iterable
 from pyqt_app.input.impParamsWidget import ImpParamsWidget
+from pyqt_app.input.impListWidget import *
 from pyqt_app.ParameterDicts import *
 
 class ImpWidget(QtWidgets.QWidget):
@@ -17,6 +18,7 @@ class ImpWidget(QtWidgets.QWidget):
         self.imp_params_widgets = {}
         self.init_ImpurityParamsWidget()
 
+        self.imp_list_widget = ImpListWidget()
 
         self.setupUI()
 
@@ -40,7 +42,11 @@ class ImpWidget(QtWidgets.QWidget):
         self._layout_choose_imp.addWidget(self.choose_imp)
         self._layout.addLayout(self._layout_choose_imp)
 
+
         self.add_imp_param_Ui()
+
+        self._layout.addWidget(self.imp_list_widget)
+        #self.imp_list_widget.btn_add.clicked.connect(self.add_impurity_to_list)
         self.setLayout(self._layout)
 
 
@@ -52,8 +58,6 @@ class ImpWidget(QtWidgets.QWidget):
     def _hide_all_imp_params(self):
         for key, value in self.imp_params_widgets.items():
             value.hide()
-
-
 
 
 if __name__ == '__main__':

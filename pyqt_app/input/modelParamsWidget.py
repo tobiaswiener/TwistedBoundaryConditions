@@ -31,7 +31,6 @@ class ModelParamsWidget(QtWidgets.QWidget):
                 self.model_params[param] = QtWidgets.QLineEdit(str(standard_value))
                 self.model_params[param].setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
-
     def add_model_param_Ui(self):
         for param, lines in self.model_params.items():
             hbox = QtWidgets.QFormLayout()

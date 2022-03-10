@@ -17,6 +17,7 @@ class ImpParamsWidget(QtWidgets.QWidget):
 
         self.imp_params = {}
         self.init_imp_params()
+
         self.setupUI()
 
     def init_imp_params(self):
@@ -41,6 +42,10 @@ class ImpParamsWidget(QtWidgets.QWidget):
     def setupUI(self):
         self.add_imp_param_Ui()
         self.setLayout(self._layout)
+
+
+
+
 
 
     def get_imp_params(self):

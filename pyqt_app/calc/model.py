@@ -56,6 +56,15 @@ class Model_2D(ABC):
         for index, energy in zip(imp_indices, imp_energies):
             self.matrix[index, index] = energy
 
+    def set_impurities(self, imp_dict):
+        for key, value in imp_dict.items():
+            index = self._location_tuple_to_hilbert_space_index(key)
+            self.matrix[index, index] = value
+
+    def set_impurities_dict(self, imp_dict):
+        for key, value in imp_dict.items():
+            index = self._location_tuple_to_hilbert_space_index(key)
+            self.matrix[index, index] = value
 
 class TightBinding_2D(Model_2D):
     def __init__(self, L_x, L_y, t, phi_x, phi_y, BC_x, BC_y):
