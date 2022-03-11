@@ -29,7 +29,7 @@ class Model_2D(ABC):
         except AssertionError:
             print("location outside of lattice")
             raise
-        hilbert_space_index = x + y * (L_y - 1)
+        hilbert_space_index = x + y * L_x
         return hilbert_space_index
 
     def _location_tuple_to_hilbert_space_index(self, loc_tuple):
@@ -40,7 +40,7 @@ class Model_2D(ABC):
         except AssertionError:
             print("location outside of lattice")
             raise
-        hilbert_space_index = x + y * (self.L_y - 1)
+        hilbert_space_index = x + y * self.L_x
         return hilbert_space_index
 
     def solve(self):
