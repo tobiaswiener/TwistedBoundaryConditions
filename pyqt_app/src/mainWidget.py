@@ -14,8 +14,8 @@ class MainWidget(QtWidgets.QWidget):
 
     def __init__(self, Nw=2):
         super().__init__()
-        self.worker = None
-        self.thread = None
+        self.worker = {}
+        self.thread = {}
         self._layout = QtWidgets.QGridLayout()
 
         self.Nw = 2
@@ -55,7 +55,7 @@ class MainWidget(QtWidgets.QWidget):
 
     def kill(self, i):
         if self.worker is not None:
-            self.worker.stop()
+            self.worker[i].stop()
 
 
 
@@ -68,38 +68,40 @@ class MainWidget(QtWidgets.QWidget):
 
 
         # Step 2: Create a QThread object
-        self.thread = QThread()
+        thread = QThread()
+        self.thread[i] = thread
         # Step 3: Create a worker object
-        self.worker = Calculation(m, model_params, p, plot_params, im, imp_params, imp_dict)
+        worker = Calculation(m, model_params, p, plot_params, im, imp_params, imp_dict)
+        self.worker[i] = worker
         # Step 4: Move worker to the thread
-        self.worker.moveToThread(self.thread)
+        worker.moveToThread(thread)
 
         # Step 5: Connect signals and slots
-        self.thread.started.connect(self.worker.run_phis)
-        self.worker.started.connect(self.input_widget[i].set_kill_btn)
-        self.worker.finished.connect(self.input_widget[i].set_calc_btn)
-        self.worker.killed.connect(self.input_widget[i].set_calc_btn)
+        thread.started.connect(worker.run_phis)
+        worker.started.connect(self.input_widget[i].set_kill_btn)
+        worker.finished.connect(self.input_widget[i].set_calc_btn)
+        worker.killed.connect(self.input_widget[i].set_calc_btn)
 
 
-        self.worker.killed.connect(self.thread.quit)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(partial(self.add_new_spots, i))
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.progress.connect(self.input_widget[i].progress_bar.update_percentage)
-        self.worker.time_remain.connect(self.input_widget[i].progress_bar.update_time)
+        worker.killed.connect(thread.quit)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(partial(self.add_new_spots, i))
+        thread.finished.connect(thread.deleteLater)
+        worker.progress.connect(self.input_widget[i].progress_bar.update_percentage)
+        worker.time_remain.connect(self.input_widget[i].progress_bar.update_time)
 
-        self.worker.killed.connect(self.input_widget[i].progress_bar.reset)
-        self.worker.killed.connect(partial(self.input_widget[i].setInputEnabled,True))
-        self.worker.finished.connect(partial(self.input_widget[i].setInputEnabled,True))
+        worker.killed.connect(self.input_widget[i].progress_bar.reset)
+        worker.killed.connect(partial(self.input_widget[i].setInputEnabled,True))
+        worker.finished.connect(partial(self.input_widget[i].setInputEnabled,True))
 
         # Step 6: Start the thread
-        self.thread.start()
+        thread.start()
 
 
 
 
     def add_new_spots(self, i):
-        new_spots = self.worker.give_list_eigenvalues()
+        new_spots = self.worker[i].give_list_eigenvalues()
 
         all_spots_empty = self._all_spots_empty()
         self.spots[i].extend(new_spots)
