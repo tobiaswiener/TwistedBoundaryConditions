@@ -3,7 +3,7 @@ import sys
 
 
 from src.ParameterDicts import *
-from src.input.plotParamsWidget import PlotParamsWidget
+from src.input.parametrization.parametrizationParamsWidget import PlotParamsWidget
 
 class PlotWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):

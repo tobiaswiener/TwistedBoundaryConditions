@@ -3,10 +3,10 @@ import random
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox
 
-from src.input.impListWidget import ImpInfoWidget
-from src.input.modelWidget import ModelWidget
-from src.input.impWidget import ImpWidget
-from src.input.plotWidget import PlotWidget
+from src.input.impurity.impListWidget import ImpInfoWidget
+from src.input.model.modelWidget import ModelWidget
+from src.input.impurity.impWidget import ImpWidget
+from src.input.parametrization.parametrizationWidget import PlotWidget
 from src.utils.progressBar import ProgressBar
 
 class InputWidget(QtWidgets.QWidget):

@@ -2,7 +2,7 @@ from PyQt6 import QtWidgets
 import sys
 
 from src.ParameterDicts import *
-from src.input.modelParamsWidget import ModelParamsWidget
+from src.input.model.modelParamsWidget import ModelParamsWidget
 
 
 class ModelWidget(QtWidgets.QWidget):

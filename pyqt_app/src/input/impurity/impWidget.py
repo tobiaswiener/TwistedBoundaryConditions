@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets
 
-from src.input.impParamsWidget import ImpParamsWidget
-from src.input.impListWidget import ImpListWidget
+from src.input.impurity.impParamsWidget import ImpParamsWidget
+from src.input.impurity.impListWidget import ImpListWidget
 from src.ParameterDicts import *
 
 class ImpWidget(QtWidgets.QWidget):
