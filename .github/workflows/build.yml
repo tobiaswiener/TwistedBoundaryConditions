@@ -40,7 +40,7 @@ jobs:
             TARGET: macos
             CMD_BUILD: >
                 pyinstaller -F -n twistedBoundaries pyqt_app/TwistedBoundaryConditionsApp.py &&
-                cd  &&
+                cd dist/ &&
                 zip -r9 twistedBoundaries_macos.zip twistedBoundaries
             OUT_FILE_NAME: twistedBoundaries_macos.zip
             ASSET_MIME: application/zip
@@ -55,7 +55,7 @@ jobs:
             TARGET: ubuntu
             CMD_BUILD: >
                 pyinstaller -F -n twistedBoundaries pyqt_app/TwistedBoundaryConditionsApp.py &&
-                cd  &&
+                cd dist/ &&
                 zip -r9 twistedBoundaries_ubuntu.zip twistedBoundaries
             OUT_FILE_NAME: twistedBoundaries_ubuntu.zip
             ASSET_MIME: application/zip
