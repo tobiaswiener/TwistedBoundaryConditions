@@ -35,19 +35,21 @@ class MainWidget(QtWidgets.QWidget):
 
     def setupUi(self):
         self.resize(1200, 1000)
-        self._layout.addWidget(self.plot_widget, 0,0,1,self.Nw)
-        self._layout.setRowStretch(0,4)
+        self._layout.addWidget(self.plot_widget, 0,0,1,2)
         for i in range(self.Nw):
-            self._layout.addWidget(self.input_widget[i],1,i)
-            self._layout.setRowStretch(i, 1)
+            self._layout.addWidget(self.input_widget[i],1,i,1,1)
             self.input_widget[i].btn_calc.clicked.connect(partial(self.calc, i))
             self.input_widget[i].btn_clear.clicked.connect(partial(self.clear, i))
             self.input_widget[i].btn_kill.clicked.connect(partial(self.kill, i))
+        self._layout.setRowStretch(0, 2)
+        self._layout.setRowStretch(1, 1)
 
+
+        #self._layout.setRowStretch()
 
         self._link_views()
         self._set_plot_options()
-        self._layout.setRowStretch(0,2)
+        #self._layout.setRowStretch(0,2)
         self.setLayout(self._layout)
         self.setWindowTitle('Twisted Boundary Conditions')
 
