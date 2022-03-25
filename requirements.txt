@@ -2,7 +2,7 @@ pyinstaller==4.10
 numpy
 scipy
 matplotlib
-PyQt6
-pyqtgraph
+PyQt6==6.2.3
+pyqtgraph==0.12.3
 xarray
 
