@@ -51,6 +51,7 @@ jobs:
             OUT_FILE_NAME: clipster.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
 
+
           - os: ubuntu-latest
             TARGET: ubuntu
             CMD_BUILD: >
