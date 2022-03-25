@@ -5,7 +5,9 @@ on:
 
 jobs:
   test:
-    echo "test print"
+    steps:
+      - name: test_echo
+        run: echo "test print"
 
 
 
