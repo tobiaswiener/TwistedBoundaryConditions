@@ -39,8 +39,7 @@ jobs:
           - os: macos-latest
             TARGET: macos
             CMD_BUILD: >
-                cd pyqt_app/ &&
-                pyinstaller -F -w -n twistedBoundaries TwistedBoundaryConditionsApp.py &&
+                pyinstaller -F -w -n twistedBoundaries pyqt_app/TwistedBoundaryConditionsApp.py &&
                 cd dist/ &&
                 zip -r9 twistedBoundaries twistedBoundaries.app/
             OUT_FILE_NAME: twistedBoundaries.zip
