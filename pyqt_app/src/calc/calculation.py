@@ -131,3 +131,4 @@ class Calculation(QObject):
 
 
         return all_spots
+

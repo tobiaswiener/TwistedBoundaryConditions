@@ -5,7 +5,7 @@ import sys
 from src.ParameterDicts import *
 from src.input.parametrization.parametrizationParamsWidget import PlotParamsWidget
 
-class PlotWidget(QtWidgets.QWidget):
+class ParametrizationWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__()
         self._layout = QtWidgets.QVBoxLayout()
@@ -55,12 +55,14 @@ class PlotWidget(QtWidgets.QWidget):
 
 
 
+
+
 if __name__ == '__main__':
 
 
     app = QtWidgets.QApplication([])
     #app = pg.mkQApp("Scatter Plot Item Example")
 
-    mw = PlotWidget()
+    mw = ParametrizationWidget()
     mw.show()
     sys.exit(app.exec())

@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 import random
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox
@@ -6,7 +7,7 @@ from PyQt6.QtWidgets import QMessageBox
 from src.input.impurity.impListWidget import ImpInfoWidget
 from src.input.model.modelWidget import ModelWidget
 from src.input.impurity.impWidget import ImpWidget
-from src.input.parametrization.parametrizationWidget import PlotWidget
+from src.input.parametrization.parametrizationWidget import ParametrizationWidget
 from src.utils.progressBar import ProgressBar
 
 class InputWidget(QtWidgets.QWidget):
@@ -18,7 +19,7 @@ class InputWidget(QtWidgets.QWidget):
 
         self.model_widget = ModelWidget()
 
-        self.plot_widget = PlotWidget()
+        self.plot_widget = ParametrizationWidget()
         self.imp_widget = ImpWidget()
 
         self.btn_calc = QtWidgets.QPushButton("Calculate")
@@ -74,6 +75,9 @@ class InputWidget(QtWidgets.QWidget):
         params = self.plot_widget.plot_params_widgets[p].get_plot_params()
         return p, params
 
+    def get_parametrization_dict(self):
+        pass
+
     def get_imp_params(self):
         i = self.imp_widget.choose_imp.currentText()
         params = self.imp_widget.imp_params_widgets[i].get_imp_params()
@@ -92,6 +96,43 @@ class InputWidget(QtWidgets.QWidget):
             if child.text() == "Kill Calculation" or child.text() == "Clear Plot":
                 continue
             child.setEnabled(enabled)
+
+    def _s_to_phis(self, s, p, plot_params):
+        phi_x = None
+        phi_y = None
+        p, plot_params = self.get_plot_params()
+        if plot_params["name"] == "linear":
+            m_x = plot_params["m_x"]
+            c_x = plot_params["c_x"]
+
+            m_y = plot_params["m_y"]
+            c_y = plot_params["c_y"]
+
+            phi_x = m_x*s + c_x
+            phi_y = m_y*s + c_y
+
+        elif plot_params["name"] == "ellipse":
+            a = plot_params["a"]
+            b = plot_params["b"]
+            x_0 = plot_params["x_0"]
+            y_0 = plot_params["y_0"]
+
+            phi_x = a*np.cos(2*np.pi*s) + x_0
+            phi_y = a*np.sin(2*np.pi*s) + y_0
+
+        return phi_x, phi_y
+
+    def add_curve_to_dict(self):
+        p, plot_params = self.get_plot_params()
+
+        ds = plot_params["ds"]
+        s_min = plot_params["s_min"]
+        s_max = plot_params["s_max"]
+
+        s_array = np.arange(s_min, s_max, ds)
+        Ns = s_array.size
+
+        [(s, self._s_to_phis(s,p,plot_params)) for s in s_array]
 
 
 
