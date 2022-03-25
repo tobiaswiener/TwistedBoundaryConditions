@@ -3,5 +3,9 @@ name: build application with PyInstaller
 on:
   workflow_dispatch:
 
+jobs:
+  test:
+    echo "test print"
+
 
 
